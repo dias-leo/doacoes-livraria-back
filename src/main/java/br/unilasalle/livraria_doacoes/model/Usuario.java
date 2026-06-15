@@ -30,6 +30,9 @@ public class Usuario {
     @Column(nullable = false)
     private String telefone;
 
+    @Column(unique = true)
+    private String cpf;
+
     @OneToMany(mappedBy = "usuario")
     @JsonManagedReference("usuario-livros")
     @Builder.Default

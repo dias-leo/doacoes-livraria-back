@@ -1,7 +1,9 @@
 package br.unilasalle.livraria_doacoes.controller;
 
+import br.unilasalle.livraria_doacoes.dto.DoacaoSimplesRequest;
 import br.unilasalle.livraria_doacoes.model.Doacao;
 import br.unilasalle.livraria_doacoes.service.DoacaoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,8 @@ public class DoacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Doacao> criar(@RequestBody Doacao doacao) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(doacaoService.criar(doacao));
+    public ResponseEntity<Doacao> criar(@Valid @RequestBody DoacaoSimplesRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(doacaoService.criar(request));
     }
 
     @PutMapping("/{id}")

@@ -86,6 +86,10 @@ public class LivroService {
             throw new IllegalArgumentException("Status inválido: " + status);
         }
     }
+
+    public List<Livro> listarAcervoDisponivel() {
+        return livroRepository.findByStatus(LivroStatus.DISPONIVEL);
+    }
 }
 
 

@@ -19,6 +19,15 @@ API REST simples para cadastro de usuarios, categorias, livros e doacoes.
 - `GET /livros/status/{status}`
 - `GET/POST/PUT/DELETE /doacoes`
 
+## Swagger / OpenAPI
+
+Depois de subir a aplicação, a documentação interativa fica disponível em:
+
+- `/swagger-ui/index.html`
+- `/v3/api-docs`
+
+No Render, basta acessar a URL pública da API e adicionar um desses caminhos.
+
 ## Executar
 
 ```powershell

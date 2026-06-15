@@ -28,18 +28,73 @@ API REST simples para cadastro de usuarios, categorias, livros e doacoes.
 
 ## Deploy no Render
 
-Passos mínimos para subir no Render (Web Service):
+### Render + Supabase
 
-1. Conecte o repositório ao Render e escolha "Web Service".
-2. Build command: `./mvnw.cmd -q package` (ou `./mvnw.cmd package`).
-3. Start command: `java -jar target/livraria-doacoes-0.0.1-SNAPSHOT.jar` (ajuste a versão se necessário).
-4. Variáveis de ambiente recomendadas:
-   - `PORT` — Render provê automaticamente; a aplicação lê `server.port=${PORT:8080}`.
-   - `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` — credenciais do banco (Postgres).
-   - `APP_CORS_ALLOWED_ORIGINS` — origens permitidas para o front (ex: `https://meu-front.onrender.com` ou `http://localhost:3000`).
+Este projeto usa **PostgreSQL do Supabase como banco externo** e roda no Render como **Web Service**.
 
-Observações:
+#### Passos mínimos
+
+1. Conecte o repositório ao Render e escolha **Web Service**.
+2. Em **Build Command**, use:
+
+```bash
+./mvnw package
+```
+
+3. Em **Start Command**, use:
+
+```bash
+java -jar target/livraria-doacoes-0.0.1-SNAPSHOT.jar
+```
+
+4. Configure as variáveis de ambiente no Render:
+
+   - `SPRING_DATASOURCE_URL`
+   - `SPRING_DATASOURCE_USERNAME`
+   - `SPRING_DATASOURCE_PASSWORD`
+   - `APP_CORS_ALLOWED_ORIGINS`
+
+#### Exemplo de configuração do Supabase
+
+No painel do Supabase, pegue os dados em **Project Settings > Database**. A URL JDBC costuma seguir este formato:
+
+```text
+jdbc:postgresql://db.<seu-project-ref>.supabase.co:5432/postgres?sslmode=require
+```
+
+Valores comuns:
+
+- `SPRING_DATASOURCE_USERNAME=postgres`
+- `SPRING_DATASOURCE_PASSWORD=<senha do banco do Supabase>`
+
+> Observação: a URL exata pode mudar conforme o projeto do Supabase, então prefira copiar a connection string do próprio painel e adaptar para JDBC, sempre com `sslmode=require`.
+
+#### CORS para o front
+
+Se o frontend estiver em outro domínio, defina `APP_CORS_ALLOWED_ORIGINS` com as origens permitidas, separadas por vírgula e **sem espaços**:
+
+```text
+https://meu-front.onrender.com,http://localhost:3000
+```
+
+#### Observações importantes
+
+- A aplicação já lê a porta do Render com `server.port=${PORT:8080}`.
 - Não armazene segredos no `application.properties`; use variáveis de ambiente no painel do Render.
-- Se usar um banco hospedado (Supabase, RDS, etc.), assegure que o serviço do Render pode alcançar a instância de Postgres.
-- Para integrar com o frontend, configure `APP_CORS_ALLOWED_ORIGINS` com a URL do frontend ou use `*` em dev.
+- Para desenvolvimento local, você pode manter os valores padrão do arquivo de configuração.
+- O banco do Supabase é só o PostgreSQL; não é necessário adicionar Supabase Auth para esta API básica.
+
+### Integração com o frontend
+
+Para o front consumir a API, ele só precisa conhecer a URL pública do backend no Render. Exemplo:
+
+```text
+https://sua-api.onrender.com
+```
+
+Payloads importantes:
+
+- `POST /livros` espera um `usuario.idUsuario` e uma `categoria.idCategoria`.
+- `POST /doacoes` espera um `livro.idLivro`.
+- Erros vêm no formato `{ "erro": "mensagem" }`.
 

@@ -26,29 +26,37 @@ API REST simples para cadastro de usuarios, categorias, livros e doacoes.
 .\mvnw.cmd spring-boot:run
 ```
 
+## Docker (Local e Render)
+
+### Build local com Docker
+
+```bash
+docker build -t livraria-doacoes .
+docker run -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres \
+  -e SPRING_DATASOURCE_USERNAME=postgres \
+  -e SPRING_DATASOURCE_PASSWORD=postgres \
+  -e APP_CORS_ALLOWED_ORIGINS=http://localhost:3000 \
+  livraria-doacoes
+```
+
+---
+
 ## Deploy no Render
 
 ### Render + Supabase
 
 Este projeto usa **PostgreSQL do Supabase como banco externo** e roda no Render como **Web Service**.
 
-#### Passos mínimos
+#### Passos de configuração no Render
 
 1. Conecte o repositório ao Render e escolha **Web Service**.
-2. Em **Build Command**, use:
-
-```bash
-./mvnw package
-```
-
-3. Em **Start Command**, use:
-
-```bash
-java -jar target/livraria-doacoes-0.0.1-SNAPSHOT.jar
-```
+2. O Render detecta o `Dockerfile` automaticamente.
+3. Se preferir build manual (sem Docker), configure:
+   - **Build Command**: `./mvnw package`
+   - **Start Command**: `java -jar target/livraria-doacoes-0.0.1-SNAPSHOT.jar`
 
 4. Configure as variáveis de ambiente no Render:
-
    - `SPRING_DATASOURCE_URL`
    - `SPRING_DATASOURCE_USERNAME`
    - `SPRING_DATASOURCE_PASSWORD`
